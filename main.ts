@@ -18,10 +18,19 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . . . . . . . . . . . . 
         `, mySprite, 0, -70)
 })
+info.onCountdownEnd(function () {
+    game.showLongText("we won!", DialogLayout.Left)
+    game.over(true)
+})
+info.onLifeZero(function () {
+    game.showLongText("the enemy has taken over our base oh-no", DialogLayout.Bottom)
+    game.over(false)
+})
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
     otherSprite.startEffect(effects.fire)
     sprite.destroy()
+    info.changeScoreBy(1)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     info.changeLifeBy(-1)
@@ -31,6 +40,24 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 let h: Sprite = null
 let projectile: Sprite = null
 let mySprite: Sprite = null
+game.setDialogFrame(img`
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    f f f f f f f f f f f f f f f 
+    `)
+game.setDialogTextColor(0)
 game.showLongText("the enemy is invading try to shoot down as many bombers as you can", DialogLayout.Center)
 scene.setBackgroundColor(9)
 info.setLife(2)
@@ -69,6 +96,25 @@ mySprite = sprites.create(img`
 controller.moveSprite(mySprite)
 effects.clouds.startScreenEffect()
 mySprite.setFlag(SpriteFlag.StayInScreen, true)
+game.setDialogCursor(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . 1 1 . . . . . 
+    . . . . . . . . 1 1 . . . . . . 
+    . 1 1 1 1 1 1 1 1 . . . . . . . 
+    1 2 1 1 2 1 1 2 1 . . . . . . . 
+    . 1 1 1 1 1 1 1 1 . . . . . . . 
+    . . . . . . . . 1 1 . . . . . . 
+    . . . . . . . . . 1 1 . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `)
+info.startCountdown(60)
 game.onUpdateInterval(500, function () {
     h = sprites.createProjectileFromSide(img`
         ..............................
